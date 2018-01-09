@@ -1,28 +1,17 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { FlatList, Text, View, StyleSheet, TouchableOpacity, NativeModules } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Avatar from './avatar/Avatar';
 
-const data = [
-  {
-    familyName: 'zhao',
-    fullName: 'ruda',
-    phoneNumber: 18865177789,
-  }, {
-    familyName: 'zhao',
-    fullName: 'ruda',
-    phoneNumber: 18865177789,
-  }, {
-    familyName: 'zhao',
-    fullName: 'ruda',
-    phoneNumber: 18865177789,
-  },
-];
+const PhoneContact = NativeModules.PhoneContact;
 
 class PhoneContactList extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+        data: []
+    }
   }
 
   _keyExtractor = (item, index) => index
@@ -41,10 +30,15 @@ class PhoneContactList extends Component {
     <View style={styles.separator}/>
   )
 
+    componentDidMount() {
+        PhoneContact.show().then(data => this.setState({data}));
+    }
+
   render() {
+
     return (
       <FlatList
-        data={data}
+        data={this.state.data}
         keyExtractor={this._keyExtractor}
         renderItem={this._renderItem}
         ItemSeparatorComponent={this._renderSeparator}
